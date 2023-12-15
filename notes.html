@@ -58,8 +58,11 @@
 
     <script>
         function saveNote() {
+            
+        function saveNote() {
             const noteContent = document.getElementById('noteContent').value;
-            const apiUrl = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/note.txt';
+            const fileName = document.getElementById('fileName').value; // Get the loaded file name
+            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${fileName}.txt`;
             const accessToken = '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';
             const branch = 'main';
 
