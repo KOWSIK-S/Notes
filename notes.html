@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Notes</title>
+    <title>Notes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,18 +28,20 @@
             background-color: #45a049;
         }
 
-        input {
-            width: 70%;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
         .load-note-button {
             background-color: #3498db;
         }
 
         .load-note-button:hover {
             background-color: #2980b9;
+        }
+
+        .share-button {
+            background-color: #2ecc71;
+        }
+
+        .share-button:hover {
+            background-color: #27ae60;
         }
     </style>
 </head>
@@ -51,6 +53,8 @@
 
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
     <button onclick="saveNote()">Save Note</button>
+
+    <button class="share-button" onclick="shareNote()">Share</button>
 
     <script>
         function saveNote() {
@@ -101,6 +105,21 @@
                     console.error('Error loading note:', error);
                     alert('Error loading note. Please check the file name and try again.');
                 });
+        }
+
+        function shareNote() {
+            const noteContent = document.getElementById('noteContent').value;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Shared Note',
+                    text: noteContent,
+                })
+                .then(() => console.log('Shared successfully'))
+                .catch(error => console.error('Error sharing:', error));
+            } else {
+                alert('Web Share API is not supported in your browser.');
+            }
         }
     </script>
 </body>
