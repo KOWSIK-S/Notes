@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes</title>
+    <title>GitHub Notes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,23 +43,108 @@
         .share-button:hover {
             background-color: #27ae60;
         }
+
+        .create-button {
+            background-color: #e74c3c;
+        }
+
+        .create-button:hover {
+            background-color: #c0392b;
+        }
+
+        select {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>GitHub Notes</h1>
-    <label for="fileName">Enter file name to load:</label>
-    <input type="text" id="fileName" placeholder="Enter file name with extension (e.g., note.txt)">
-    <button class="load-note-button" onclick="loadNote()">Load Note</button>
 
+    <!-- File selection box -->
+    <label for="fileSelect">Select or create a file:</label>
+    <select id="fileSelect" onchange="loadSelectedNote()">
+        <!-- File options will be dynamically populated here -->
+    </select>
+
+    <!-- Button to load selected note -->
+    <button class="load-note-button" onclick="loadSelectedNote()">Load Note</button>
+
+    <!-- Textarea for note content -->
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
+
+    <!-- Button to save note -->
     <button onclick="saveNote()">Save Note</button>
 
+    <!-- Button to create new note -->
+    <button class="create-button" onclick="createNewNote()">Create New Note</button>
+
+    <!-- Button to share note -->
     <button class="share-button" onclick="shareNote()">Share</button>
 
     <script>
+        // Function to dynamically load file names into the select box
+        function loadFileNames() {
+            const apiUrl = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes';
+            const accessToken = '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';
+            const branch = 'main';
+
+            fetch(apiUrl + `?ref=${branch}`, {
+                headers: {
+                    'Authorization': `token ${accessToken}`,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const fileSelect = document.getElementById('fileSelect');
+
+                // Clear existing options
+                fileSelect.innerHTML = '';
+
+                // Add an option for each file
+                data.forEach(file => {
+                    if (file.type === 'file' && file.name.endsWith('.txt')) {
+                        const option = document.createElement('option');
+                        option.value = file.name;
+                        option.textContent = file.name;
+                        fileSelect.appendChild(option);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading file names:', error);
+                alert('Error loading file names. Please try again.');
+            });
+        }
+
+        // Function to load the content of the selected note
+        function loadSelectedNote() {
+            const selectedFileName = document.getElementById('fileSelect').value;
+            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${selectedFileName}`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load note: ${response.status} ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('noteContent').value = data;
+                    alert('Note loaded successfully!');
+                })
+                .catch(error => {
+                    console.error('Error loading note:', error);
+                    alert('Error loading note. Please check the file name and try again.');
+                });
+        }
+
+        // Function to save the changes to the selected note
         function saveNote() {
             const noteContent = document.getElementById('noteContent').value;
-            const apiUrl = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/note.txt';
+            const selectedFileName = document.getElementById('fileSelect').value;
+            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${selectedFileName}`;
             const accessToken = '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';
             const branch = 'main';
 
@@ -86,25 +171,37 @@
             });
         }
 
-        function loadNote() {
-            const fileName = document.getElementById('fileName').value;
-            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}`;
+        // Function to create a new note (file)
+        function createNewNote() {
+            const newFileName = prompt('Enter the name for the new note (including .txt extension):');
+            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${newFileName}`;
+            const accessToken = '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';
+            const branch = 'main';
 
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Failed to load note: ${response.status} ${response.statusText}`);
-                    }
-                    return response.text();
+            if (newFileName) {
+                fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'Create new note',
+                        content: btoa(''), // Initialize with empty content
+                        branch: branch,
+                    }),
                 })
+                .then(response => response.json())
                 .then(data => {
-                    document.getElementById('noteContent').value = data;
-                    alert('Note loaded successfully!');
+                    console.log('New note created:', data);
+                    loadFileNames(); // Reload the file names after creating a new note
+                    alert('New note created successfully!');
                 })
                 .catch(error => {
-                    console.error('Error loading note:', error);
-                    alert('Error loading note. Please check the file name and try again.');
+                    console.error('Error creating new note:', error);
+                    alert('Error creating new note. Please try again.');
                 });
+            }
         }
 
         function shareNote() {
@@ -121,6 +218,9 @@
                 alert('Web Share API is not supported in your browser.');
             }
         }
+
+        // Load file names when the page loads
+        loadFileNames();
     </script>
 </body>
 </html>
