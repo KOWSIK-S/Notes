@@ -28,26 +28,36 @@
             background-color: #45a049;
         }
 
-        .loading {
-            display: none;
-            color: #4CAF50;
+        input {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .load-note-button {
+            background-color: #3498db;
+        }
+
+        .load-note-button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
     <h1>GitHub Notes</h1>
+    <label for="fileName">Enter file name to load:</label>
+    <input type="text" id="fileName" placeholder="Enter file name with extension (e.g., note.txt)">
+    <button class="load-note-button" onclick="loadNote()">Load Note</button>
+
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
     <button onclick="saveNote()">Save Note</button>
-    <span id="loading" class="loading">Saving...</span>
 
     <script>
         function saveNote() {
             const noteContent = document.getElementById('noteContent').value;
             const apiUrl = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/note.txt';
             const accessToken = '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';
-
-            // Show loading spinner
-            document.getElementById('loading').style.display = 'inline';
+            const branch = 'main';
 
             fetch(apiUrl, {
                 method: 'PUT',
@@ -58,7 +68,7 @@
                 body: JSON.stringify({
                     message: 'Update note',
                     content: btoa(noteContent),
-                    branch: 'main',
+                    branch: branch,
                 }),
             })
             .then(response => response.json())
@@ -69,11 +79,28 @@
             .catch(error => {
                 console.error('Error saving note:', error);
                 alert('Error saving note. Please try again.');
-            })
-            .finally(() => {
-                // Hide loading spinner
-                document.getElementById('loading').style.display = 'none';
             });
+        }
+
+        function loadNote() {
+            const fileName = document.getElementById('fileName').value;
+            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load note: ${response.status} ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('noteContent').value = data;
+                    alert('Note loaded successfully!');
+                })
+                .catch(error => {
+                    console.error('Error loading note:', error);
+                    alert('Error loading note. Please check the file name and try again.');
+                });
         }
     </script>
 </body>
