@@ -48,7 +48,7 @@
 <body>
     <h1>GitHub Notes</h1>
     <label for="fileName">Enter file name to load:</label>
-    <input type="text" id="fileName" placeholder="Enter file name (only txt files with extension)">
+    <input type="text" id="fileName" placeholder="Enter file name with extension (e.g., note.txt)">
     <button class="load-note-button" onclick="loadNote()">Load Note</button>
 
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
@@ -58,11 +58,8 @@
 
     <script>
         function saveNote() {
-            
-        function saveNote() {
             const noteContent = document.getElementById('noteContent').value;
-            const fileName = document.getElementById('fileName').value; // Get the loaded file name
-            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${fileName}`;
+            const apiUrl = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/note.txt';
             const accessToken = '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';
             const branch = 'main';
 
