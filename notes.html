@@ -48,7 +48,7 @@
 <body>
     <h1>GitHub Notes</h1>
     <label for="fileName">Enter file name to load:</label>
-    <input type="text" id="fileName" placeholder="Enter file name (only txt files without extension)">
+    <input type="text" id="fileName" placeholder="Enter file name (only txt files with extension)">
     <button class="load-note-button" onclick="loadNote()">Load Note</button>
 
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
@@ -62,7 +62,7 @@
         function saveNote() {
             const noteContent = document.getElementById('noteContent').value;
             const fileName = document.getElementById('fileName').value; // Get the loaded file name
-            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${fileName}.txt`;
+            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${fileName}`;
             const accessToken = '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';
             const branch = 'main';
 
@@ -91,7 +91,7 @@
 
         function loadNote() {
             const fileName = document.getElementById('fileName').value;
-            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}.txt`;
+            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}`;
 
             fetch(apiUrl)
                 .then(response => {
