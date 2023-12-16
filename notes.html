@@ -99,6 +99,7 @@
                 })
                 .then(data => {
                     document.getElementById('noteContent').value = data;
+                    repo.writeFile('main/notes', 'note.txt', 'data', 'update note', options, callback);
                     alert('Note loaded successfully!');
                 })
                 .catch(error => {
