@@ -14,6 +14,20 @@
       overflow: hidden;
     }
 
+    #toggleSidebarBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      cursor: pointer;
+      background-color: #343a40;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      z-index: 1;
+    }
+
     #sidebar {
       width: 200px;
       background-color: #343a40;
@@ -21,11 +35,13 @@
       padding: 20px;
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
+      transition: width 0.3s ease;
     }
 
     #main-content {
       flex: 1;
       padding: 20px;
+      transition: margin-left 0.3s ease;
     }
 
     h1 {
@@ -42,7 +58,7 @@
     }
 
     input, textarea {
-      width: calc(100% - 20px);
+      width: 100%;
       padding: 10px;
       margin-bottom: 10px;
       box-sizing: border-box;
@@ -58,11 +74,11 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    .load-note-button {
+    #openNoteButton {
       background-color: #3498db;
     }
 
-    .load-note-button:hover {
+    #openNoteButton:hover {
       background-color: #2980b9;
     }
 
@@ -80,6 +96,14 @@
 
     .share-button:hover {
       background-color: #27ae60;
+    }
+
+    #newNoteButton {
+      background-color: #e74c3c;
+    }
+
+    #newNoteButton:hover {
+      background-color: #c0392b;
     }
 
     .tab-container {
@@ -109,14 +133,17 @@
   </style>
 </head>
 <body>
+  <button id="toggleSidebarBtn" onclick="toggleSidebar()">Toggle Sidebar</button>
+  
   <div id="sidebar">
     <h1>GitHub Notes</h1>
     <div class="tab-container" id="tabContainer"></div>
     <label for="fileName">Enter file name:</label>
     <input type="text" id="fileName" placeholder="Enter file name without extension (e.g., note)">
-    <button class="load-note-button" onclick="loadNote()">Load Note</button>
+    <button id="openNoteButton" onclick="openNote()">Open Note</button>
     <button class="save-note-button" onclick="saveNote()">Save/Update Note</button>
     <button class="share-button" onclick="shareNote()">Share</button>
+    <button id="newNoteButton" onclick="createNewNote()">New Note</button>
   </div>
 
   <div id="main-content">
@@ -124,8 +151,8 @@
   </div>
 
   <script>
-    const apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/';
-    const accessToken = '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'; // Your GitHub access token
+    const apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
+    const accessToken = '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'; // Your GitHub access token
     const branch = 'main';
 
     const tabContainer = document.getElementById('tabContainer');
@@ -139,19 +166,22 @@
       return response.json();
     }
 
-    function loadNote() {
+    function openNote() {
       const fileName = fileNameInput.value.trim();
       const apiUrl = `${apiUrlBase}${fileName}.txt`;
 
       fetch(apiUrl)
         .then(handleFetchResponse)
         .then(data => {
+          const repositoryInfo = data.repository || 'KOWSIK-S/Notes';
+          const filePath = data.path || `notes/${fileName}.txt`;
+
           noteContentInput.value = atob(data.content);
-          alert('Note loaded successfully!');
+          apiUrlBase = `https://api.github.com/repos/${repositoryInfo}/contents/`;
         })
         .catch(error => {
-          console.error('Error loading note:', error);
-          alert('Error loading note. Please check the file name and try again.');
+          console.error('Error opening note:', error);
+          alert('Error opening note. Please check the file name and try again.');
         });
     }
 
@@ -198,40 +228,41 @@
       }
     }
 
-    function addTab(fileName) {
-      const tab = document.createElement('div');
-      tab.classList.add('tab');
-      tab.textContent = fileName;
-      tab.addEventListener('click', () => switchTab(fileName));
-      tabContainer.appendChild(tab);
+    function createNewNote() {
+      const fileName = prompt('Enter a new file name (without extension):');
+      if (fileName) {
+        const apiUrl = `${apiUrlBase}${fileName}.txt`;
+
+        fetch(apiUrl)
+          .then(response => {
+            if (response.ok) {
+              alert(`A file with the name '${fileName}' already exists. Please choose another name.`);
+            } else {
+              fileNameInput.value = fileName;
+              noteContentInput.value = '';
+              apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
+            }
+          })
+          .catch(error => {
+            fileNameInput.value = fileName;
+            noteContentInput.value = '';
+            apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
+          });
+      }
     }
 
-    function switchTab(fileName) {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(tab => tab.classList.remove('active'));
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('main-content');
 
-      const selectedTab = document.querySelector(`.tab:contains(${fileName})`);
-      selectedTab.classList.add('active');
-
-      fileNameInput.value = fileName;
-      loadNote();
+      if (sidebar.style.width === '0px' || sidebar.style.width === '') {
+        sidebar.style.width = '200px';
+        mainContent.style.marginLeft = '200px';
+      } else {
+        sidebar.style.width = '0';
+        mainContent.style.marginLeft = '0';
+      }
     }
-
-    function containsText(element, text) {
-      return element.innerText.includes(text);
-    }
-
-    if (typeof jQuery === 'undefined') {
-      jQuery = {};
-      jQuery.expr = {};
-      jQuery.expr[':'] = {};
-      jQuery.expr[':'].contains = function (a, i, m) {
-        return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-      };
-    }
-
-    addTab('sample-note');
-    switchTab('sample-note');
   </script>
 </body>
 </html>
