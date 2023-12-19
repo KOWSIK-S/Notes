@@ -59,6 +59,7 @@
 
     input, textarea {
       width: 100%;
+      height: calc(100vh - 80px); /* Adjust the height based on your header and other elements */
       padding: 10px;
       margin-bottom: 10px;
       box-sizing: border-box;
@@ -173,6 +174,7 @@
       fetch(apiUrl)
         .then(handleFetchResponse)
         .then(data => {
+          console.log('Loaded data:', data);
           const repositoryInfo = data.repository || 'KOWSIK-S/Notes';
           const filePath = data.path || `notes/${fileName}.txt`;
 
@@ -180,8 +182,8 @@
           apiUrlBase = `https://api.github.com/repos/${repositoryInfo}/contents/`;
         })
         .catch(error => {
-          console.error('Error opening note:', error);
-          alert('Error opening note. Please check the file name and try again.');
+          console.error('Error loading note:', error);
+          alert('Error loading note. Please check the file name and try again.');
         });
     }
 
