@@ -1,246 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Notes</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: #f8f9fa;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Notes</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        #sidebar {
-            width: 200px;
-            background-color: #343a40;
-            color: #fff;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-        }
+    #sidebar {
+      width: 200px;
+      background-color: #343a40;
+      color: #fff;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+    }
 
-        #main-content {
-            flex: 1;
-            padding: 20px;
-        }
+    #main-content {
+      flex: 1;
+      padding: 20px;
+    }
 
-        h1 {
-            color: #333;
-            text-align: center;
-        }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            color: #343a40;
-        }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      color: #343a40;
+    }
 
-        input, textarea {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
+    input, textarea {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
 
-        button {
-            padding: 10px;
-            cursor: pointer;
-            border: none;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    button {
+      padding: 10px;
+      cursor: pointer;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-        .load-note-button {
-            background-color: #3498db;
-        }
+    .load-note-button {
+      background-color: #3498db;
+    }
 
-        .load-note-button:hover {
-            background-color: #2980b9;
-        }
+    .load-note-button:hover {
+      background-color: #2980b9;
+    }
 
-        .save-note-button {
-            background-color: #4CAF50;
-        }
+    .save-note-button {
+      background-color: #4CAF50;
+    }
 
-        .save-note-button:hover {
-            background-color: #45a049;
-        }
+    .save-note-button:hover {
+      background-color: #45a049;
+    }
 
-        .share-button {
-            background-color: #2ecc71;
-        }
+    .share-button {
+      background-color: #2ecc71;
+    }
 
-        .share-button:hover {
-            background-color: #27ae60;
-        }
+    .share-button:hover {
+      background-color: #27ae60;
+    }
 
-        .tab-container {
-            display: flex;
-            margin-bottom: 10px;
-        }
+    .tab-container {
+      display: flex;
+      margin-bottom: 10px;
+    }
 
-        .tab {
-            flex: 1;
-            padding: 10px;
-            background-color: #343a40;
-            color: #fff;
-            cursor: pointer;
-            border: none;
-            text-align: center;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
-        }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      background-color: #343a40;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      margin-right: 5px;
+      border-radius: 5px 5px 0 0;
+    }
 
-        .tab:hover {
-            background-color: #495057;
-        }
+    .tab:hover {
+      background-color: #495057;
+    }
 
-        .tab.active {
-            background-color: #495057;
-        }
-    </style>
+    .tab.active {
+      background-color: #495057;
+    }
+  </style>
 </head>
 <body>
-    <div id="sidebar">
-        <h1>GitHub Notes</h1>
-        <div class="tab-container" id="tabContainer"></div>
-        <label for="fileName">Enter file name:</label>
-        <input type="text" id="fileName" placeholder="Enter file name without extension (e.g., note)">
-        <button class="load-note-button" onclick="loadNote()">Load Note</button>
-        <button class="save-note-button" onclick="saveNote()">Save/Update Note</button>
-        <button class="share-button" onclick="shareNote()">Share</button>
-    </div>
+  <div id="sidebar">
+    <h1>GitHub Notes</h1>
+    <div class="tab-container" id="tabContainer"></div>
+    <label for="fileName">Enter file name:</label>
+    <input type="text" id="fileName" placeholder="Enter file name without extension (e.g., note)">
+    <button class="load-note-button" onclick="loadNote()">Load Note</button>
+    <button class="save-note-button" onclick="saveNote()">Save/Update Note</button>
+    <button class="share-button" onclick="shareNote()">Share</button>
+  </div>
 
-    <div id="main-content">
-        <textarea id="noteContent" placeholder="Type your note here..."></textarea>
-    </div>
+  <div id="main-content">
+    <textarea id="noteContent" placeholder="Type your note here..."></textarea>
+  </div>
 
-    <script>
-        const tabContainer = document.getElementById('tabContainer');
-        const fileNameInput = document.getElementById('fileName');
-        const noteContentInput = document.getElementById('noteContent');
+  <script>
+    const apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/';
+    const accessToken = ''; // Your GitHub access token
+    const branch = 'main';
 
-        function loadNote() {
-            const fileName = fileNameInput.value.trim();
-            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}.txt`;
+    const tabContainer = document.getElementById('tabContainer');
+    const fileNameInput = document.getElementById('fileName');
+    const noteContentInput = document.getElementById('noteContent');
 
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Failed to load note: ${response.status} ${response.statusText}`);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    noteContentInput.value = data;
-                    alert('Note loaded successfully!');
-                })
-                .catch(error => {
-                    console.error('Error loading note:', error);
-                    alert('Error loading note. Please check the file name and try again.');
-                });
-        }
+    function handleFetchResponse(response) {
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    }
 
-        function saveNote() {
-            const fileName = fileNameInput.value.trim();
-            const noteContent = noteContentInput.value;
-            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${fileName}.txt`;
-            const accessToken = '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'; // Your GitHub access token
-            const branch = 'main';
+    function loadNote() {
+      const fileName = fileNameInput.value.trim();
+      const apiUrl = `${apiUrlBase}${fileName}.txt`;
 
-            fetch(apiUrl, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    message: 'Update note',
-                    content: btoa(noteContent),
-                    branch: branch,
-                }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Failed to save note: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Note saved:', data);
-                alert('Note saved successfully!');
-            })
-            .catch(error => {
-                console.error('Error saving note:', error);
-                alert('Error saving note. Please try again.');
-            });
-        }
+      fetch(apiUrl)
+        .then(handleFetchResponse)
+        .then(data => {
+          noteContentInput.value = atob(data.content);
+          alert('Note loaded successfully!');
+        })
+        .catch(error => {
+          console.error('Error loading note:', error);
+          alert('Error loading note. Please check the file name and try again.');
+        });
+    }
 
-        function shareNote() {
-            const noteContent = noteContentInput.value;
+    function saveNote() {
+      const fileName = fileNameInput.value.trim();
+      const noteContent = noteContentInput.value;
+      const apiUrl = `${apiUrlBase}${fileName}.txt`;
 
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Shared Note',
-                    text: noteContent,
-                })
-                .then(() => console.log('Shared successfully'))
-                .catch(error => console.error('Error sharing:', error));
-            } else {
-                alert('Web Share API is not supported in your browser.');
-            }
-        }
+      fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: 'Update note',
+          content: btoa(noteContent),
+          branch: branch,
+        }),
+      })
+      .then(handleFetchResponse)
+      .then(data => {
+        console.log('Note saved:', data);
+        alert('Note saved successfully!');
+      })
+      .catch(error => {
+        console.error('Error saving note:', error);
+        alert('Error saving note. Please try again.');
+      });
+    }
 
-        // Add a new tab to the tab container
-        function addTab(fileName) {
-            const tab = document.createElement('div');
-            tab.classList.add('tab');
-            tab.textContent = fileName;
-            tab.addEventListener('click', () => switchTab(fileName));
-            tabContainer.appendChild(tab);
-        }
+    function shareNote() {
+      const noteContent = noteContentInput.value;
 
-        // Switch to a different tab
-        function switchTab(fileName) {
-            // Remove 'active' class from all tabs
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
+      if (navigator.share) {
+        navigator.share({
+          title: 'Shared Note',
+          text: noteContent,
+        })
+        .then(() => console.log('Shared successfully'))
+        .catch(error => console.error('Error sharing:', error));
+      } else {
+        alert('Web Share API is not supported in your browser.');
+      }
+    }
 
-            // Add 'active' class to the selected tab
-            const selectedTab = document.querySelector(`.tab:contains(${fileName})`);
-            selectedTab.classList.add('active');
+    function addTab(fileName) {
+      const tab = document.createElement('div');
+      tab.classList.add('tab');
+      tab.textContent = fileName;
+      tab.addEventListener('click', () => switchTab(fileName));
+      tabContainer.appendChild(tab);
+    }
 
-            // Load the content for the selected tab
-            fileNameInput.value = fileName;
-            loadNote();
-        }
+    function switchTab(fileName) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
 
-        // Utility function to check if an element contains a specific text
-        function containsText(element, text) {
-            return element.innerText.includes(text);
-        }
+      const selectedTab = document.querySelector(`.tab:contains(${fileName})`);
+      selectedTab.classList.add('active');
 
-        // Polyfill for :contains() selector
-        if (typeof jQuery === 'undefined') {
-            jQuery = {};
-            jQuery.expr = {};
-            jQuery.expr[':'] = {};
-            jQuery.expr[':'].contains = function (a, i, m) {
-                return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-            };
-        }
+      fileNameInput.value = fileName;
+      loadNote();
+    }
 
-        // Initial setup with a sample note
-        addTab('sample-note');
-        switchTab('sample-note');
-    </script>
+    function containsText(element, text) {
+      return element.innerText.includes(text);
+    }
+
+    if (typeof jQuery === 'undefined') {
+      jQuery = {};
+      jQuery.expr = {};
+      jQuery.expr[':'] = {};
+      jQuery.expr[':'].contains = function (a, i, m) {
+        return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+      };
+    }
+
+    addTab('sample-note');
+    switchTab('sample-note');
+  </script>
 </body>
 </html>
