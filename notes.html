@@ -59,6 +59,7 @@
 
     input, textarea, select {
       width: 100%;
+      height: 100%; /* Adjust height to cover the full length of the page */
       padding: 10px;
       margin-bottom: 10px;
       box-sizing: border-box;
@@ -149,7 +150,6 @@
   <div id="main-content">
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
   </div>
-
   <script>
     const apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
     const accessToken = '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'; // Your GitHub access token
