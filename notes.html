@@ -59,7 +59,7 @@
 
     input, textarea {
       width: 100%;
-      height: calc(100vh - 80px); /* Adjust the height based on your header and other elements */
+      height: calc(100vh - 80px);
       padding: 10px;
       margin-bottom: 10px;
       box-sizing: border-box;
@@ -131,6 +131,7 @@
     .tab.active {
       background-color: #495057;
     }
+    
   </style>
 </head>
 <body>
@@ -139,8 +140,8 @@
   <div id="sidebar">
     <h1>GitHub Notes</h1>
     <div class="tab-container" id="tabContainer"></div>
-    <label for="fileName">Enter file name:</label>
-    <input type="text" id="fileName" placeholder="Enter file name without extension (e.g., note)">
+    <label for="fileName">Select or Enter file name:</label>
+    <input type="file" id="fileInput" accept=".txt">
     <button id="openNoteButton" onclick="openNote()">Open Note</button>
     <button class="save-note-button" onclick="saveNote()">Save/Update Note</button>
     <button class="share-button" onclick="shareNote()">Share</button>
@@ -153,11 +154,11 @@
 
   <script>
     const apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
-    const accessToken = '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'; // Your GitHub access token
+    const accessToken = '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'; // Your GitHub access token
     const branch = 'main';
 
     const tabContainer = document.getElementById('tabContainer');
-    const fileNameInput = document.getElementById('fileName');
+    const fileNameInput = document.getElementById('fileInput');
     const noteContentInput = document.getElementById('noteContent');
 
     function handleFetchResponse(response) {
@@ -168,23 +169,19 @@
     }
 
     function openNote() {
-      const fileName = fileNameInput.value.trim();
-      const apiUrl = `${apiUrlBase}${fileName}.txt`;
+      const selectedFile = fileNameInput.files[0];
 
-      fetch(apiUrl)
-        .then(handleFetchResponse)
-        .then(data => {
-          console.log('Loaded data:', data);
-          const repositoryInfo = data.repository || 'KOWSIK-S/Notes';
-          const filePath = data.path || `notes/${fileName}.txt`;
+      if (selectedFile) {
+        const reader = new FileReader();
 
-          noteContentInput.value = atob(data.content);
-          apiUrlBase = `https://api.github.com/repos/${repositoryInfo}/contents/`;
-        })
-        .catch(error => {
-          console.error('Error loading note:', error);
-          alert('Error loading note. Please check the file name and try again.');
-        });
+        reader.onload = function (e) {
+          noteContentInput.value = e.target.result;
+        };
+
+        reader.readAsText(selectedFile);
+      } else {
+        alert('Please select a file.');
+      }
     }
 
     function saveNote() {
@@ -242,13 +239,11 @@
             } else {
               fileNameInput.value = fileName;
               noteContentInput.value = '';
-              apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
             }
           })
           .catch(error => {
             fileNameInput.value = fileName;
             noteContentInput.value = '';
-            apiUrlBase = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/';
           });
       }
     }
