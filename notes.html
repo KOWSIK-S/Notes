@@ -3,29 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes</title>
+    <title>GitHub Notes</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
         }
 
         textarea {
-            width: 100%;
+            width: calc(100% - 20px);
             height: 200px;
             margin-bottom: 10px;
+            padding: 10px;
         }
 
         button {
             padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            margin-right: 10px;
             cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 5px;
         }
 
         .load-note-button {
@@ -34,6 +52,14 @@
 
         .load-note-button:hover {
             background-color: #2980b9;
+        }
+
+        .save-note-button {
+            background-color: #4CAF50;
+        }
+
+        .save-note-button:hover {
+            background-color: #45a049;
         }
 
         .share-button {
@@ -47,20 +73,21 @@
 </head>
 <body>
     <h1>GitHub Notes</h1>
-    <label for="fileName">Enter file name to load:</label>
-    <input type="text" id="fileName" placeholder="Enter file name with extension (e.g., note.txt)">
+    <label for="fileName">Enter file name:</label>
+    <input type="text" id="fileName" placeholder="Enter file name without extension (e.g., note)">
+    
     <button class="load-note-button" onclick="loadNote()">Load Note</button>
+    <button class="save-note-button" onclick="saveNote()">Save/Update Note</button>
+    <button class="share-button" onclick="shareNote()">Share</button>
 
     <textarea id="noteContent" placeholder="Type your note here..."></textarea>
-    <button onclick="saveNote()">Save Note</button>
-
-    <button class="share-button" onclick="shareNote()">Share</button>
 
     <script>
         function saveNote() {
+            const fileName = document.getElementById('fileName').value.trim();
             const noteContent = document.getElementById('noteContent').value;
-            const apiUrl = 'https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/note.txt';
-            const accessToken = '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';
+            const apiUrl = `https://api.github.com/repos/KOWSIK-S/Notes/contents/notes/${fileName}.txt`;
+            const accessToken = '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'; // Your GitHub access token
             const branch = 'main';
 
             fetch(apiUrl, {
@@ -75,7 +102,12 @@
                     branch: branch,
                 }),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to save note: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Note saved:', data);
                 alert('Note saved successfully!');
@@ -88,7 +120,7 @@
 
         function loadNote() {
             const fileName = document.getElementById('fileName').value;
-            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}`;
+            const apiUrl = `https://raw.githubusercontent.com/KOWSIK-S/Notes/main/notes/${fileName}.txt`;
 
             fetch(apiUrl)
                 .then(response => {
